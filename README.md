@@ -1,4 +1,4 @@
-# plc-exercises
+# EECS345
 Programming Language Concepts (EECS 345)
 Case Western Reserve University
 
