@@ -1,0 +1,127 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>EECS 345: Programming Exercise 2</title>
+</head>
+
+<body>
+<h2>EECS 345: Programming Language Concepts</h2>
+<h2>Programming Exercise 2</h2>
+<h3>Due Sunday, February 21</h3>
+
+<p>For questions 1-8, write Scheme definitions for the following functions using
+continuation passing style
+(CPS). The continuation argument should be the last argument. For example, if
+you were asked to write factorial, the ''normal'' recursive function is:
+</p><pre>(define factorial
+  (lambda (n)
+    (if (zero? n)
+        1
+        (* n (factorial (- n 1))))))
+</pre>
+and so your answer should be
+<pre>(define factorial-cps
+  (lambda (n return)
+    (if (zero? n)
+        (return 1)
+        (factorial-cps (- n 1) (lambda (v) (return (* n v)))))))
+</pre><p></p>
+
+<p>You do not have to convert simple scheme built-in non-recursive functions like <tt>null?</tt>,
+<tt>eq?</tt>, <tt>list?</tt>, <tt>number?</tt>, <tt>car</tt>, <tt>cons</tt>, <tt>cdr</tt> to 
+CPS, but all other helper functions you create should be in CPS.</p>
+
+<ol>
+
+<li><tt>dotproduct</tt> takes a two vectors (lists of numbers) and 
+computes the dot product of the vectors. If one list is longer than the 
+other, you can ignore the extra numbers of the longer list. <br>
+<pre>&gt; (dotproduct '(1 2 3) '(-2 1 5))
+15
+</pre>
+</li>
+
+<li><tt>removesubsequence</tt> takes two lists of atoms. The first list is a <em>subsequence</em>
+ of the second list. The method should return the second list with the 
+first occurence of the subsequence removed. So, if the first list is <tt>'(a b c)</tt>, the first <tt>a</tt> if the second list is removed, the first <tt>b</tt> that appears after the removed <tt>a</tt> is removed, and the first <tt>c</tt> that appears after the removed <tt>b</tt> is removed.<br>
+<pre>&gt; (removesubsequence '(1 3 5) '(0 1 2 3 4 5 6))
+(0 2 4 6)
+&gt; (removesubsequence '(1 3 5) '(5 4 3 2 1 2 3 4 5))
+(5 4 3 2 2 4)
+&gt; (removesubsequence '(a b c) '(d b c a c b a b c))
+(d b c c a b)
+</pre>
+</li>
+
+<li><tt>squareroot</tt> takes two numbers, a value and an iteration.  The iteration will be an integer greater than or equal to 0.
+The method will compute the squareroot of the value using <em>iteration</em> rounds of Newton's method, starting with an initial value equal to the input value.<br>
+Newton's method is new = old - ((old * old) - value) / (2 * old)<br>
+<pre>&gt; (squareroot 5.0 0)
+5.0
+&gt; (squareroot 5.0 1)
+3.0
+&gt; (squareroot 5.0 5)
+2.236067977499978
+&gt; (squareroot 5 5)
+2 514229/2178309
+</pre></li>
+
+<li><tt>replaceall*</tt> takes two atoms and a nested list and replaces every occurrence of the first atom with the second
+<pre>&gt; (replaceall* 'a 'x '(a (a (a b) c) a))
+(x (x (x b) c) x)
+</pre>
+</li>
+
+<li><tt>reverse*</tt> takes a nested list and reverses the contents of the list and all nested lists
+<pre>&gt; (reverse* '(a b (c (d e ((f) g)) h)))
+((h ((g (f)) e d) c) b a)
+</pre></li>
+
+<li><tt>vectormult</tt> takes a row vector (a list of numbers) and 
+matrix (a list of lists of numbers) and multiplies the vector times the 
+matrix. The result is a vector where the ith element of the result is 
+the dotproduct of the input vector and the ith column of the matrix. You
+ can assume that the length of the vector matches the number of rows of 
+the matrix.<br>
+<pre>&gt; (vectormult '(1 2 -1) '((0 2 3) (1 2 0) (1 0 3)))
+(1 6 0)
+</pre>
+</li>
+
+<li><tt>matrixmultiply</tt> takes two matrices (a list of lists of 
+numbers) and multiplies them. You can assume the number of columns of 
+the first matrix is equal to the number of rows of the second matrix.<br> in the same sublist<br>
+<pre>&gt; (matrixmultiply '((1 0 1) (1 1 1) (0 1 1)) '((2 3 4) (-1 1 2) (3 1 -2)))
+((5 4 2) (4 5 4) (2 2 0))
+</pre>
+</li>
+
+<li><tt>removesubsequence*</tt> 
+ takes a list of atoms and a general list.  The first list is a <em>subsequence</em> of the second list.  The method should return the second list
+with the first occurence of the subsequence removed.  So, if the first list is <tt>'(a b c)</tt>, the first <tt>a</tt> if the second list is removed, the first <tt>b</tt>
+that appears after the removed <tt>a</tt> is removed, and the first <tt>c</tt> that appears after the removed <tt>b</tt> is removed - no matter how deep the atoms are nested.<br>
+<pre>&gt; (removesubsequence* '(a b) '(w (x b) ((a) ((y z))) b))
+(w (x b) (() ((y z))))
+</pre>
+<p>As a hint, you need to keep track of two values between recursive calls.  So use two values in the continuation function: <tt>(removesubsequence*-cps '(a b) '(w (x b) ((a) ((y z))) b) (lambda (v1 v2) v2))</tt></p></li>
+
+<li><strong>Write the following function without external helper functions or additional parameters.</strong>  
+You may use <tt>letrec</tt> to create an internal helper function that uses continuation passing style.
+<br>
+The function <tt>suffix</tt> takes an atom and a list and returns a list containing all elements
+that occur <em>after</em> the last occurrence of the atom.
+<pre>(suffix 'x '(a b c))  ==&gt; (a b c)
+(suffix 'x '(a b x c d x e f)) ==&gt; (e f)
+</pre>
+</li>
+
+<li><strong>Write a second version of suffix that uses <tt>call/cc</tt> instead of the "normal" continuation passing style.</strong>
+You may not use external helper functions or additional parameters, but you may use <tt>letrec</tt>.
+<pre>(suffix2 'x '(a b c))  ==&gt; (a b c)
+(suffix2 'x '(a b x c d x e f)) ==&gt; (e f)
+</pre>
+</li>
+
+</ol>
+
+
+</body></html>

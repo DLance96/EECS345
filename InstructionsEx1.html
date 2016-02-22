@@ -1,0 +1,123 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<title>EECS 345: Programming Exercise 1</title>
+</head>
+
+<body>
+<h2>EECS 345: Programming Language Concepts</h2>
+<h2>Programming Exercise 1</h2>
+<h3>Due Saturday, January 30</h3>
+
+<p>The purpose of this programming exercise is to learn the basic functional programming paradigm and become comfortable using
+recursion.
+In this homework, you are to create a number of Scheme functions.  You are to follow a strict
+function programming style.  That means you need to follow the style we used in class and use only functions, parameters, and
+recursion.  You may write any helper functions you need, and you may use functions created for
+one problem to solve another.  Please do not use built in Scheme functions except the ones we
+used in class: <tt>car</tt>, <tt>cdr</tt> (and all their variants like <tt>cadr</tt> and <tt>cdar</tt>), <tt>cons</tt>,
+<tt>null?</tt>, <tt>pair?</tt>, <tt>list?</tt>, <tt>number?</tt>, <tt>=</tt>, <tt>eq?</tt> <tt>zero?</tt>, <tt>if</tt>, <tt>cond</tt>, and all the standard arithmetic and logic functions.</p>
+
+<p>
+Please include a comment at the top of the file giving your name, and please include a comment
+at the top of each function briefly explaining the function.  Scheme comments start with a semicolon.</p>
+
+<p>Do not nest <tt>cond</tt> statements.  Nor have more than two <tt>if</tt> statements nested inside each other.  Instead, rearrange your logic so that you can write
+your function with a single <tt>cond</tt> of multiple cases.</p>
+
+<p>You can assume all input is in the proper format.</p>
+
+<p>Write the following functions:
+</p><ol>
+
+<li><tt>inorder?</tt> takes a list of numbers and returns #t if the numbers are in non-decreasing order<br>
+<pre>&gt; (inorder? '())
+#t
+&gt; (inorder? '(1 4 5 6 9 10))
+#t
+&gt; (inorder? '(1 4 5 4 6 10))
+#f</pre></li>
+
+<li><tt>dotproduct</tt> takes a two vectors (lists of numbers) and 
+computes the dot product of the vectors.  If one list is longer than the
+ other, you can ignore the extra numbers of the longer list. <br>
+<pre>&gt; (dotproduct '(1 2 3) '(-2 1 5))
+15
+</pre></li>
+
+<li><tt>squareroot</tt> takes two numbers, a value and an iteration.  The iteration will be an integer greater than or equal to 0.
+The method will compute the squareroot of the value using <em>iteration</em> rounds of Newton's method, starting with an initial value equal to the input value.<br>
+Newton's method is new = old - ((old * old) - value) / (2 * old)<br>
+<pre>&gt; (squareroot 5.0 0)
+5.0
+&gt; (squareroot 5.0 1)
+3.0
+&gt; (squareroot 5.0 5)
+2.236067977499978
+&gt; (squareroot 5 5)
+2 514229/2178309
+</pre></li>
+
+<li><tt>removesubsequence</tt> takes two lists of atoms.  The first list is a <em>subsequence</em> of the second list.  The method should return the second list
+with the first occurence of the subsequence removed.  So, if the first list is <tt>'(a b c)</tt>, the first <tt>a</tt> if the second list is removed, the first <tt>b</tt>
+that appears after the removed <tt>a</tt> is removed, and the first <tt>c</tt> that appears after the removed <tt>b</tt> is removed.<br>
+<pre>&gt; (removesubsequence '(1 3 5) '(0 1 2 3 4 5 6))
+(0 2 4 6)
+&gt; (removesubsequence '(1 3 5) '(5 4 3 2 1 2 3 4 5))
+(5 4 3 2 2 4)
+&gt; (removesubsequence '(a b c) '(d b c a c b a b c))
+(d b c c a b)
+</pre></li>
+
+<li><tt>reverse*</tt> takes a nested list and reverses the contents of the list and all nested lists
+<pre>&gt; (reverse* '(a b (c (d e ((f) g)) h)))
+((h ((g (f)) e d) c) b a)
+</pre></li>
+
+<li><tt>first*</tt> takes a list of lists and returns the first atom that appears in the list, regardless of how nested it is<br>
+<pre>&gt; (first* '(a (b c) ((d e))))
+a
+&gt; (first* '(((a (b c)) d) e))
+a
+&gt; (first* '((() a b)))
+()</pre></li>
+
+<li><tt>last*</tt> takes a list of lists and returns the last atom that appears in the list, regardless of how nested it is<br>
+<pre>&gt; (last* '(a (b c) ((d e))))
+e
+&gt; (last* '(((a (b c)) d) e))
+e
+&gt; (last* '((() a b ())))
+()</pre></li>
+
+<li><tt>numorder*?</tt> takes a possibly nested list of numbers, and returns #t if the <em>values</em> of the entries in the list
+are in non-decreasing order.  The value of a number is the number.  The value of a list is the sum of the values in that list.<br>
+<pre>&gt; (numorder*? '((() ()) 1 (2) (2 3 (-1 4) 5) (((4) 5) 10) 20))
+#t
+&gt; (numorder*? '(1 (2) (2 3 (-1 4)) 5))
+#f
+</pre></li>
+
+<li><tt>vectormult</tt> takes a row vector (a list of numbers) and 
+matrix (a list of lists of numbers) and multiplies the vector times the 
+matrix.
+The result is a vector where the ith element of the result is the 
+dotproduct of the input vector and the ith column of the matrix.  You 
+can assume
+that the length of the vector matches the number of rows of the matrix.<br>
+<pre>&gt; (vectormult '(1 2 -1) '((0 2 3) (1 2 0) (1 0 3)))
+(1 6 0)
+</pre></li>
+
+<li><tt>matrixmultiply</tt> takes two matrices (a list of lists of numbers) and multiplies them.  You can assume the number of columns of the first
+matrix is equal to the number of rows of the second matrix.<br>
+in the same sublist<br>
+<pre>&gt; (matrixmultiply '((1 0 1) (1 1 1) (0 1 1)) '((2 3 4) (-1 1 2) (3 1 -2)))
+((5 4 2) (4 5 4) (2 2 0))
+</pre></li>
+
+</ol><p></p>
+
+
+
+
+</body></html>
